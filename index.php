@@ -11,9 +11,11 @@ $messages = $db->fetch_all('SELECT * FROM messages ORDER BY date DESC, id DESC')
 
 if( @$_POST['create_new'] != '' ) {
     $history = [];
+for($i = 1; $i < 100; $i++) {
     foreach( $db->fetch_all('SELECT * FROM messages ORDER BY date ASC, id ASC') as $messages__value ) {
         $history[] = ['role' => $messages__value['role'], 'content' => $messages__value['content']];
     }
+}
     $response = __::chatgpt(
         prompt: $_POST['content'],
         history: $history,
@@ -31,7 +33,7 @@ if( @$_POST['create_new'] != '' ) {
         'content' => $response['response'],
         'date' => date('Y-m-d H:i:s', strtotime('now'))
     ]);
-    header("Location: " . $_SERVER['REQUEST_URI']);
+    header("Location: " . parse_url($_SERVER['REQUEST_URI'], PHP_URL_PATH).'?usage_costs='.$response['usage']['costs']);
     die();
 }
 
@@ -56,6 +58,9 @@ echo '
 </head>
 <body>
 ';
+    if( @$_GET['usage_costs'] != '' ) {
+        echo '<strong>Kosten letzter Aufruf: '.($_GET['usage_costs']*0.92).'€</strong><br/>';
+    }
     echo '<form method="post">';
         echo '<textarea name="content"></textarea>';
         echo '<input type="submit" name="create_new" value="Absenden" />';
