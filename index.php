@@ -11,11 +11,9 @@ $messages = $db->fetch_all('SELECT * FROM messages ORDER BY date DESC, id DESC')
 
 if( @$_POST['create_new'] != '' ) {
     $history = [];
-for($i = 1; $i < 100; $i++) {
     foreach( $db->fetch_all('SELECT * FROM messages ORDER BY date ASC, id ASC') as $messages__value ) {
         $history[] = ['role' => $messages__value['role'], 'content' => $messages__value['content']];
     }
-}
     $response = __::chatgpt(
         prompt: $_POST['content'],
         history: $history,
