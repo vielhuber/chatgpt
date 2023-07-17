@@ -18,7 +18,8 @@ if( @$_POST['create_new'] != '' ) {
         prompt: $_POST['content'],
         history: $history,
         temperature: 0.7,
-        model: 'gpt-3.5-turbo',
+        //model: 'gpt-3.5-turbo',
+        model: 'gpt-4',
         api_key: @$_SERVER['OPENAI_API_KEY']
     );
     $db->insert('messages', [
